@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Transaction Detail</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .detail-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .detail-section div {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 16px;
+        }
+        .detail-section div:last-child {
+            border-bottom: none;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="anomalies.html">Anomalies</a>
+            <a href="compliance.html">Compliance</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Transaction Detail View</h1>
+        <p class="page-subtitle">Detailed analysis for Transaction ID: #TRX-98432</p>
+
+        <div class="detail-section">
+            <div><strong>Transaction ID:</strong> #TRX-98432</div>
+            <div><strong>Vendor:</strong> Maharashtra Manufacturing Pvt. Ltd.</div>
+            <div><strong>Amount:</strong> ₹12,48,900</div>
+            <div><strong>Date:</strong> 2025-10-14</div>
+            <div><strong>Anomaly Score:</strong> 94%</div>
+            <div>**Explanation:** SHAP values indicate high influence from amount and vendor behavior.</div>
+        </div>
+
+        <div class="detail-section">
+            <h3 style="margin-top: 0;">Supporting Documents</h3>
+            <div>Invoice Viewer: [Placeholder for PDF/Image Viewer]</div>
+            <button class="card-btn download-btn">Download Original Invoice</button>
+        </div>
+
+        <div class="detail-section">
+            <h3 style="margin-top: 0;">Audit Notes</h3>
+            <textarea placeholder="Add audit notes and remediation plan here..."></textarea>
+            <button class="card-btn assign-btn">Save Notes</button>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="../js/data.js"></script>
+    <script type="module">
+        import { updateHeader } from '../js/data.js';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>

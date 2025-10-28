@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Transactions Monitor</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transactions.html" class="active">Transactions</a>
+            <a href="anomalies.html">Anomalies</a>
+            <a href="compliance.html">Compliance</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title">Transactions Monitor</h1>
+        <p class="page-subtitle">Review high-value postings, compliance exceptions, and automated reconciliation results.</p>
+        <div class="controls">
+            <button class="filter-btn">Filter</button>
+            <button class="export-btn">Export CSV</button>
+        </div>
+        <div class="transaction-list">
+            </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="../js/data.js"></script>
+    <script type="module" src="../js/transactions.js"></script>
+</body>
+</html>

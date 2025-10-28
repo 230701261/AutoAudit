@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Rules Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .rules-list {
+            margin-top: 20px;
+        }
+        .rule-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .rule-item h3 { margin-top: 0; }
+        .rule-item button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        .rule-item button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="anomalies.html">Anomalies</a>
+            <a href="compliance.html">Compliance</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Rules Management</h1>
+        <p class="page-subtitle">Manage compliance rules for the system.</p>
+        <button class="action-btn assign-btn">Create New Rule</button>
+        <div class="rules-list">
+            <div class="rule-item">
+                <div>
+                    <h3>GST Validation Rule</h3>
+                    <p>Version 1.0 Active</p>
+                </div>
+                <div>
+                    <button class="view-btn" style="color: #007bff; background: #e3f2fd;">Edit</button>
+                    <button class="logout-btn" style="border: 1px solid #dc3545; color: #dc3545; background: none;">Delete</button>
+                </div>
+            </div>
+            </div>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="../js/data.js"></script>
+    <script type="module">
+        import { updateHeader } from '../js/data.js';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>

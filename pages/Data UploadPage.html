@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Data Upload</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        main {
+            text-align: center;
+        }
+        input[type="file"] {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="anomalies.html">Anomalies</a>
+            <a href="compliance.html">Compliance</a>
+            <a href="reports.html">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Data Upload & Ingestion</h1>
+        <p class="page-subtitle">Upload your financial data for analysis.</p>
+        <form>
+            <input type="file" accept=".csv,.xlsx,.pdf">
+            <button type="submit">Upload</button>
+        </form>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="../js/data.js"></script>
+    <script type="module">
+        import { updateHeader } from '../js/data.js';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>
