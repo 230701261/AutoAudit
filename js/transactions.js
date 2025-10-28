@@ -32,4 +32,32 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
     }
+
+    // --- NEWLY ADDED: Bank Sync Feature ---
+    const syncBtn = document.getElementById('sync-bank-btn');
+    const syncStatus = document.getElementById('sync-status-message');
+
+    if (syncBtn && syncStatus) {
+        syncBtn.addEventListener('click', () => {
+            // 1. Show loading animation and message
+            syncStatus.innerHTML = '<div class="loader"></div> Syncing started...';
+            syncBtn.disabled = true;
+            syncStatus.style.display = 'flex'; // Make it visible
+
+            // 2. Simulate API call (3 seconds)
+            setTimeout(() => {
+                // 3. Show completed message
+                syncStatus.innerHTML = '✅ Syncing completed.';
+                syncBtn.disabled = false;
+
+                // 4. (Optional) Hide the completed message after a few seconds
+                setTimeout(() => {
+                    syncStatus.style.display = 'none';
+                    syncStatus.innerHTML = ''; // Clear content
+                }, 3000);
+
+            }, 3000);
+        });
+    }
+    // --- END NEWLY ADDED ---
 });

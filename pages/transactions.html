@@ -22,10 +22,17 @@
     <main>
         <h1 class="page-title">Transactions Monitor</h1>
         <p class="page-subtitle">Review high-value postings, compliance exceptions, and automated reconciliation results.</p>
-        <div class="controls">
-            <button class="filter-btn">Filter</button>
-            <button class="export-btn">Export CSV</button>
-        </div>
+        
+        <div class="controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <button class="filter-btn card-btn view-btn">Filter</button>
+            <button class="export-btn card-btn download-btn">Export CSV</button>
+            
+            <button class="card-btn schedule-btn" id="sync-bank-btn">
+                Sync with Bank
+            </button>
+            <div class="sync-status" id="sync-status-message"></div>
+            </div>
+        
         <div class="transaction-list">
             </div>
     </main>

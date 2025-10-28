@@ -135,7 +135,28 @@
                 </div>
             </div>
         </div>
-    </main>
+
+        <div class="chatbot-fab" id="chatbot-toggle">
+            <span>💬</span>
+        </div>
+
+        <div class="chatbot-container hidden" id="chatbot-container">
+            <div class="chatbot-header">
+                <h3>AutoAudit AI Assistant</h3>
+                <span id="chatbot-close">✖</span>
+                <p style="font-size: 10px; margin: 0; color: #ccc;">(Dummy API: `sk-12345ABCDE...`)</p>
+            </div>
+            <div class="chatbot-messages" id="chat-messages">
+                <div class="chat-message bot">
+                    Hello! How can I help you with your audit today?
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chat-input" placeholder="Ask about anomalies...">
+                <button id="chat-send-btn">Send</button>
+            </div>
+        </div>
+        </main>
     <footer>
         <p>&copy; 2024 AutoAudit. All rights reserved.</p>
     </footer>
