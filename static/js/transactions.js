@@ -2,16 +2,17 @@
 
 import { transactionsData, updateHeader } from './data.js';
 
-// --- Data for new transactions to add after sync ---
+// --- Data for new transactions (keep as before) ---
 const newTransactionsAfterSync = [
     { id: "TRX-BANK-001", entity: "Ram Text Industry", details: "Incoming payment received via NEFT.", amount: "₹5,50,000", status: "Cleared", risk: "Low", icon: "✅", iconClass: "success", link: "/transaction-detail/" },
     { id: "TRX-BANK-002", entity: "Supplier Payments Inc.", details: "Batch payment processed, reconciliation pending.", amount: "₹-11,20,300", status: "Pending", risk: "Medium", icon: "ℹ️", iconClass: "info", link: "/transaction-detail/" },
     { id: "TRX-BANK-003", entity: "Unknown Beneficiary", details: "Unusual outward transfer detected, requires verification.", amount: "₹-95,000", status: "Flagged", risk: "High", icon: "⚠️", iconClass: "warning", link: "/transaction-detail/" }
 ];
 
-// --- Helper function to create transaction card HTML ---
+// --- Helper function createTransactionCardHTML (keep as before) ---
 function createTransactionCardHTML(txn) {
     const escapeHTML = (str) => String(str).replace(/[&<>"']/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match]));
+    // ... (rest of the function is the same, returning the HTML string) ...
     return `
         <div class="transaction-card">
             <div class="card-left">
@@ -40,21 +41,15 @@ function createTransactionCardHTML(txn) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM loaded for transactions.js");
 
-    // 1. Update Header
-    if (typeof updateHeader === 'function') {
-        updateHeader();
-    } else {
-        console.error("updateHeader function not found.");
-    }
+    // 1. Update Header (keep as before)
+    if (typeof updateHeader === 'function') updateHeader(); else console.error("updateHeader function not found.");
 
-    // 2. Render Initial Transactions
+    // 2. Render Initial Transactions (keep as before)
     const initialTransactionContainer = document.querySelector('.transaction-list');
     if (initialTransactionContainer && typeof transactionsData !== 'undefined') {
         initialTransactionContainer.innerHTML = transactionsData.map(createTransactionCardHTML).join('');
         console.log("Initial transactions rendered.");
-    } else {
-        console.warn("Could not render initial transactions: Container or data missing.");
-    }
+    } else { console.warn("Could not render initial transactions."); }
 
     // --- Bank Sync Feature ---
     const syncBtn = document.getElementById('sync-bank-btn');
@@ -78,24 +73,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 syncBtn.disabled = false;
 
                 // --- MODIFIED: Add new transactions ---
-                // Re-select the container *inside* the timeout just in case
                 const currentTransactionContainer = document.querySelector('.transaction-list');
+
                 if (currentTransactionContainer) {
-                    console.log("Transaction list container found. Attempting to append new items...");
-                    try { // Add try...catch around the appending loop
+                    console.log("Transaction list container FOUND:", currentTransactionContainer);
+                    console.log(">>> INNER HTML BEFORE APPEND:\n", currentTransactionContainer.innerHTML.substring(0, 500) + "..."); // LOG BEFORE
+
+                    try {
                         newTransactionsAfterSync.forEach((newTxn, index) => {
                             const newCardHTML = createTransactionCardHTML(newTxn);
-                            currentTransactionContainer.insertAdjacentHTML('beforeend', newCardHTML);
-                            console.log(`Appended transaction ${index + 1}: ${newTxn.entity}`);
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = newCardHTML.trim();
+                            const newCardElement = tempDiv.firstChild;
+
+                            if (newCardElement) {
+                                console.log(`Attempting to append element for item ${index + 1}...`);
+                                currentTransactionContainer.appendChild(newCardElement);
+                                console.log(`Appended transaction ${index + 1}: ${newTxn.entity}`);
+                            } else {
+                                console.error(`!!! Failed to create element from HTML for item ${index + 1}`);
+                            }
                         });
+                        // Add logging AFTER the loop finishes
+                        console.log("✅ Append loop finished.");
+                        console.log(">>> INNER HTML AFTER APPEND:\n", currentTransactionContainer.innerHTML.substring(0, 500) + "..."); // LOG AFTER
+
                     } catch (error) {
-                        console.error("!!! Error appending new transaction HTML:", error);
-                        // Optionally display an error to the user in the syncStatus
+                        console.error("!!! Error during the process of appending new transaction HTML:", error);
                         syncStatus.innerHTML = 'Error adding new transactions!';
                         syncStatus.style.color = 'red';
                     }
                 } else {
-                    // This is likely the problem if nothing appears
                     console.error("!!! Transaction list container (.transaction-list) NOT FOUND when trying to append.");
                     syncStatus.innerHTML = 'Error: Could not find list to add transactions to!';
                     syncStatus.style.color = 'red';
@@ -107,11 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (syncStatus) {
                         syncStatus.style.display = 'none';
                         syncStatus.innerHTML = '';
-                        syncStatus.style.color = ''; // Reset color
+                        syncStatus.style.color = '';
                     }
-                }, 2000);
+                }, 3000);
 
-            }, 2000); // 2 second delay
+            }, 3000); // 3 second delay
         });
     } else {
          if (!syncBtn) console.error("Sync button (#sync-bank-btn) NOT FOUND.");

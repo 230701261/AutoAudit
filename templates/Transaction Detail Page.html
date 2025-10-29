@@ -22,7 +22,7 @@
         .detail-section div:last-child {
             border-bottom: none;
         }
-        textarea {
+        #notes-input-area textarea {
             width: 100%;
             height: 150px;
             padding: 10px;
@@ -30,7 +30,21 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-family: inherit;
+            box-sizing: border-box;
         }
+        #saved-notes-display {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-size: 15px;
+            color: #333;
+            min-height: 50px;
+            display: none;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -42,9 +56,19 @@
             <a href="{% url 'anomalies' %}">Anomalies</a>
             <a href="{% url 'compliance' %}">Compliance</a>
             <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}">Upload Check</a>
         </nav>
         <div class="header-right" id="header-right-container">
-            </div>
+            {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div>
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
     </header>
     <main>
         <h1 class="page-title" style="color: #007bff;">Transaction Detail View</h1>
@@ -62,22 +86,234 @@
         <div class="detail-section">
             <h3 style="margin-top: 0;">Supporting Documents</h3>
             <div>Invoice Viewer: [Placeholder for PDF/Image Viewer]</div>
-            <button class="card-btn download-btn">Download Original Invoice</button>
+            {# --- Added ID to the button --- #}
+            <button class="card-btn download-btn" id="download-invoice-btn">Download Original Invoice</button>
         </div>
 
         <div class="detail-section">
             <h3 style="margin-top: 0;">Audit Notes</h3>
-            <textarea placeholder="Add audit notes and remediation plan here..."></textarea>
-            <button class="card-btn assign-btn">Save Notes</button>
+            <div id="saved-notes-display"></div>
+            <div id="notes-input-area">
+                <textarea id="audit-notes-input" placeholder="Add audit notes and remediation plan here..."></textarea>
+                <button class="card-btn assign-btn" id="save-notes-btn">Save Notes</button>
+            </div>
         </div>
     </main>
     <footer>
         <p>© 2024 AutoAudit. All rights reserved.</p>
     </footer>
+
     <script type="module" src="{% static 'js/data.js' %}"></script>
     <script type="module">
-        import { updateHeader } from '{% static 'js/data.js' %}';
+        // Ensure header update runs
+        import { updateHeader } from '{% static "js/data.js" %}';
         document.addEventListener('DOMContentLoaded', updateHeader);
     </script>
+
+    {# --- Inline JavaScript for Notes and Download --- #}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Save Notes Logic (from previous step) ---
+            const saveBtn = document.getElementById('save-notes-btn');
+            const notesInput = document.getElementById('audit-notes-input');
+            const notesDisplay = document.getElementById('saved-notes-display');
+            const inputArea = document.getElementById('notes-input-area');
+
+            if (saveBtn && notesInput && notesDisplay && inputArea) {
+                saveBtn.addEventListener('click', () => {
+                    const notesText = notesInput.value.trim();
+                    if (notesText !== "") {
+                        console.log("Saving notes:", notesText);
+                        notesDisplay.textContent = notesText;
+                        notesDisplay.style.display = 'block';
+                        inputArea.classList.add('hidden');
+                    } else {
+                        alert("Please enter some notes before saving.");
+                    }
+                });
+            } else {
+                 console.error("One or more elements for Audit Notes not found!");
+            }
+
+            // --- Download Invoice Logic ---
+            const downloadBtn = document.getElementById('download-invoice-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', () => {
+                    console.log("Download button clicked.");
+
+                    // Combine the text content from your PDF sources
+                    // NOTE: This is plain text, not a formatted PDF
+                    const fileContent = `
+Transaction Detail View - Page 1/10
+Detailed analysis of financial transactions detected by the AutoAudit system.
+
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98000, Jaipur Electronics Ltd., 895142, 2025-04-02, 53%, Normal transaction behavior detected
+#TRX-98001, Gujarat Industrial Works, 487157, 2025-09-30, 67%, Normal transaction behavior detected
+#TRX-98002, Hyderabad Smart Systems, 505394, 2025-01-31, 14%, Normal transaction behavior detected
+#TRX-98003, Gujarat Industrial Works, 2458935, 2025-08-08, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98004, Bangalore Tech Solutions, 1392388, 2025-05-05, 50%, Normal transaction behavior detected
+#TRX-98005, Pune Precision Tools, 1395595, 2025-06-14, 78%, Normal transaction behavior detected
+#TRX-98006, Kolkata Steel Corp., 656735, 2025-03-02, 65%, Normal transaction behavior detected
+#TRX-98007, Chennai Auto Parts Co., 2195037, 2025-10-25, 28%, Normal transaction behavior detected
+#TRX-98008, Chennai Auto Parts Co., 1115136, 2025-06-23, 42%, Normal transaction behavior detected
+#TRX-98009, Delhi Supplies & Traders, 560080, 2025-01-12, 64%, Normal transaction behavior detected
+
+--- PAGE 2 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98010, Maharashtra Manufacturing Pvt. Ltd., 481337, 2025-03-23, 57%, Normal transaction behavior detected
+#TRX-98011, Jaipur Electronics Ltd., 1500922, 2025-08-18, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98012, Kolkata Steel Corp., 1505433, 2025-08-09, 12%, Normal transaction behavior detected
+#TRX-98013, Gujarat Industrial Works, 2493329, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98014, Hyderabad Smart Systems, 2240016, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98015, Gujarat Industrial Works, 1698938, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98016, Delhi Supplies & Traders, 511066, 2025-03-26, 15%, Normal transaction behavior detected
+#TRX-98017, Jaipur Electronics Ltd., 1509461, 2025-05-20, 68%, Normal transaction behavior detected
+#TRX-98018, Bangalore Tech Solutions, 1721109, 2025-05-01, 54%, Normal transaction behavior detected
+#TRX-98019, Delhi Supplies & Traders, 1278591, 2025-02-18, 20%, Normal transaction behavior detected
+
+--- PAGE 3 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98020, Pune Precision Tools, 240523, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98021, Bangalore Tech Solutions, 1955840, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98022, Delhi Supplies & Traders, 219263, 2025-02-27, 18%, Normal transaction behavior detected
+#TRX-98023, Maharashtra Manufacturing Pvt. Ltd., 2160515, 2025-03-10, 46%, Normal transaction behavior detected
+#TRX-98024, Chennai Auto Parts Co., 1393436, 2025-06-13, 42%, Normal transaction behavior detected
+#TRX-98025, Maharashtra Manufacturing Pvt. Ltd., 439417, 2025-02-15, 62%, Normal transaction behavior detected
+#TRX-98026, Delhi Supplies & Traders, 633874, 2025-01-30, 60%, Normal transaction behavior detected
+#TRX-98027, Bangalore Tech Solutions, 1252943, 2025-02-03, 37%, Normal transaction behavior detected
+#TRX-98028, Jaipur Electronics Ltd., 1585180, 2025-06-25, 14%, Normal transaction behavior detected
+#TRX-98029, Maharashtra Manufacturing Pvt. Ltd., 2336770, 2025-01-10, 70%, Normal transaction behavior detected
+
+--- PAGE 4 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98030, Jaipur Electronics Ltd., 1452123, 2025-02-22, 68%, Normal transaction behavior detected
+#TRX-98031, Hyderabad Smart Systems, 2208030, 2025-09-16, 63%, Normal transaction behavior detected
+#TRX-98032, Pune Precision Tools, 1858715, 2025-08-15, 76%, Normal transaction behavior detected
+#TRX-98033, Jaipur Electronics Ltd., 435057, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98034, Kolkata Steel Corp., 922278, 2025-09-29, 66%, Normal transaction behavior detected
+#TRX-98035, Chennai Auto Parts Co., 274261, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98036, Maharashtra Manufacturing Pvt. Ltd., 1475296, 2025-07-18, 44%, Normal transaction behavior detected
+#TRX-98037, Surat Logistics Pvt. Ltd., 1818995, 2025-02-26, 71%, Normal transaction behavior detected
+#TRX-98038, Hyderabad Smart Systems, 644806, 2025-04-08, 70%, Normal transaction behavior detected
+#TRX-98039, Maharashtra Manufacturing Pvt. Ltd., 1902948, 2025-09-30, 53%, Normal transaction behavior detected
+
+--- PAGE 5 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98040, Gujarat Industrial Works, 2083121, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98041, Chennai Auto Parts Co., 1563401, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98042, Jaipur Electronics Ltd., 995767, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98043, Kolkata Steel Corp., 1786616, 2025-01-26, 70%, Normal transaction behavior detected
+#TRX-98044, Pune Precision Tools, 2189512, 2025-01-08, 43%, Normal transaction behavior detected
+#TRX-98045, Gujarat Industrial Works, 2460520, 2025-01-10, 70%, Normal transaction behavior detected
+#TRX-98046, Surat Logistics Pvt. Ltd., 1855124, 2025-04-03, 35%, Normal transaction behavior detected
+#TRX-98047, Hyderabad Smart Systems, 2057073, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98048, Pune Precision Tools, 1266555, 2025-09-21, 22%, Normal transaction behavior detected
+#TRX-98049, Jaipur Electronics Ltd., 2120302, 2025-09-13, 64%, Normal transaction behavior detected
+
+--- PAGE 6 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98050, Pune Precision Tools, 12292677, 2025-02-09, 36%, Normal transaction behavior detected
+#TRX-98051, Kolkata Steel Corp., 1975583, 2025-07-24, 18%, Normal transaction behavior detected
+#TRX-98052, Maharashtra Manufacturing Pvt. Ltd., 716124, 2025-09-21, 73%, Normal transaction behavior detected
+#TRX-98053, Jaipur Electronics Ltd., 722667, 2025-10-03, 21%, Normal transaction behavior detected
+#TRX-98054, Pune Precision Tools, 465884, 2025-01-19, 29%, Normal transaction behavior detected
+#TRX-98055, Hyderabad Smart Systems, 372459, 2025-03-22, 37%, Normal transaction behavior detected
+#TRX-98056, Kolkata Steel Corp., 1714999, 2025-04-09, 19%, Normal transaction behavior detected
+#TRX-98057, Hyderabad Smart Systems, 1145842, 2025-05-14, 38%, Normal transaction behavior detected
+#TRX-98058, Bangalore Tech Solutions, 1828377, 2025-07-22, 49%, Normal transaction behavior detected
+#TRX-98059, Kolkata Steel Corp., 668532, 2025-07-14, 47%, Normal transaction behavior detected
+
+--- PAGE 7 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98060, Surat Logistics Pvt. Ltd., 2374229, 2025-07-20, 75%, Normal transaction behavior detected
+#TRX-98061, Gujarat Industrial Works, 463374, 2025-04-17, 17%, Normal transaction behavior detected
+#TRX-98062, Surat Logistics Pvt. Ltd., 1768045, 2025-06-13, 80%, Normal transaction behavior detected
+#TRX-98063, Chennai Auto Parts Co., 1939731, 2025-01-06, 62%, Normal transaction behavior detected
+#TRX-98064, Chennai Auto Parts Co., 1993504, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98065, Chennai Auto Parts Co., 662576, 2025-04-18, 79%, Normal transaction behavior detected
+#TRX-98066, Kolkata Steel Corp., 490660, 2025-05-28, 20%, Normal transaction behavior detected
+#TRX-98067, Bangalore Tech Solutions, 905892, 2025-05-22, 65%, Normal transaction behavior detected
+#TRX-98068, Maharashtra Manufacturing Pvt. Ltd., 2149409, 2025-06-24, 77%, Normal transaction behavior detected
+#TRX-98069, Jaipur Electronics Ltd., 2395089, 2025-03-29, 54%, Normal transaction behavior detected
+
+--- PAGE 8 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98070, Pune Precision Tools, 583064, 2025-01-29, 69%, Normal transaction behavior detected
+#TRX-98071, Surat Logistics Pvt. Ltd., 914504, 2025-08-24, 79%, Normal transaction behavior detected
+#TRX-98072, Chennai Auto Parts Co., 1235912, 2025-06-08, 31%, Normal transaction behavior detected
+#TRX-98073, Kolkata Steel Corp., 404139, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98074, Chennai Auto Parts Co., 1934106, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98075, Maharashtra Manufacturing Pvt. Ltd., 2309318, 2025-03-09, 17%, Normal transaction behavior detected
+#TRX-98076, Hyderabad Smart Systems, 2176154, 2025-03-06, 28%, Normal transaction behavior detected
+#TRX-98077, Surat Logistics Pvt. Ltd., 2344599, 2025-07-02, 42%, Normal transaction behavior detected
+#TRX-98078, Gujarat Industrial Works, 1213860, 2025-01-23, 31%, Normal transaction behavior detected
+#TRX-98079, Delhi Supplies & Traders, 2282885, 2025-10-16, 57%, Normal transaction behavior detected
+
+--- PAGE 9 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98080, Bangalore Tech Solutions, 855602, 2025-08-22, 17%, Normal transaction behavior detected
+#TRX-98081, Kolkata Steel Corp., 255319, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98082, Pune Precision Tools, 1623686, 2025-10-08, 48%, Normal transaction behavior detected
+#TRX-98083, Maharashtra Manufacturing Pvt. Ltd., 1658563, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98084, Kolkata Steel Corp., 115921, 2025-05-24, 49%, Normal transaction behavior detected
+#TRX-98085, Bangalore Tech Solutions, 2149821, 2025-06-06, 28%, Normal transaction behavior detected
+#TRX-98086, Maharashtra Manufacturing Pvt. Ltd., 304328, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98087, Delhi Supplies & Traders, 1683066, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98088, Kolkata Steel Corp., 2033513, 2025-07-16, 71%, Normal transaction behavior detected
+#TRX-98089, Kolkata Steel Corp., 683474, 2025-06-26, 61%, Normal transaction behavior detected
+
+--- PAGE 10 ---
+Transaction ID, Vendor, Amount, Date, Anomaly Score, Explanation
+#TRX-98090, Maharashtra Manufacturing Pvt. Ltd., 1469847, 2025-10-15, 39%, Normal transaction behavior detected
+#TRX-98091, Kolkata Steel Corp., 1969824, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98092, Maharashtra Manufacturing Pvt. Ltd., 2481897, 2025-10-13, 27%, Normal transaction behavior detected
+#TRX-98093, Maharashtra Manufacturing Pvt. Ltd., 337720, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98094, Maharashtra Manufacturing Pvt. Ltd., 2032580, 2025-08-31, 27%, Normal transaction behavior detected
+#TRX-98095, Maharashtra Manufacturing Pvt. Ltd., 753480, 2025-HIGH, High, anomaly due to unusual vendor pattern and large amount
+#TRX-98096, Gujarat Industrial Works, 2175339, 2025-10-08, 54%, Normal transaction behavior detected
+#TRX-98097, Chennai Auto Parts Co., 1135409, 2025-01-29, 69%, Normal transaction behavior detected
+#TRX-98098, Pune Precision Tools, 1847699, 2025-08-20, 21%, Normal transaction behavior detected
+#TRX-98099, Surat Logistics Pvt. Ltd., 2121205, 2025-09-30, 31%, Normal transaction behavior detected
+                    `;
+
+                    // Create a Blob from the text content
+                    // Use 'application/pdf' MIME type, even though it's text,
+                    // so the browser suggests saving as .pdf
+                    const blob = new Blob([fileContent], { type: 'application/pdf' });
+
+                    // Create a temporary URL for the Blob
+                    const url = URL.createObjectURL(blob);
+
+                    // Create a temporary link element
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'Transaction_Detail_Report.pdf'; // Set the desired filename
+                    a.style.display = 'none'; // Make it invisible
+                    document.body.appendChild(a); // Add to the DOM to make it clickable
+
+                    // Simulate a click on the link
+                    a.click();
+
+                    // Clean up: remove link and revoke URL
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    console.log("Download initiated for text representation.");
+
+                });
+            } else {
+                 console.error("Download button not found!");
+            }
+
+            // Also call the header update function from data.js
+            if (typeof updateHeader === 'function') {
+                 updateHeader();
+            } else {
+                 console.error("updateHeader function not found.");
+            }
+        });
+    </script>
+    {# --- End New Script --- #}
+
 </body>
 </html>
