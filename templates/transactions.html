@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Transactions Monitor</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}" class="active">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title">Transactions Monitor</h1>
+        <p class="page-subtitle">Review high-value postings, compliance exceptions, and automated reconciliation results.</p>
+        
+        <div class="controls" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <button class="filter-btn card-btn view-btn">Filter</button>
+            <button class="export-btn card-btn download-btn">Export CSV</button>
+            
+            <button class="card-btn schedule-btn" id="sync-bank-btn">
+                Sync with Bank
+            </button>
+            <div class="sync-status" id="sync-status-message"></div>
+            </div>
+        
+        <div class="transaction-list">
+            </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module" src="{% static 'js/transactions.js' %}"></script>
+</body>
+</html>

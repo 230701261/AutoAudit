@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Compliance Prediction Results</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        .page-title, .page-subtitle { text-align: center; }
+        table { width: 100%; margin: 30px auto 20px auto; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .compliant { color: green; font-weight: bold; }
+        .non-compliant { color: red; font-weight: bold; }
+        .back-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; font-size: 16px;}
+        .plot-section { margin: 30px auto; padding: 20px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 8px; max-width: 800px; text-align: center;}
+        .plot-section img { max-width: 100%; height: auto; border: 1px solid #eee; margin-top: 15px;}
+        .plot-container { margin-top: 15px; display: none; /* Hidden by default */ }
+        .toggle-plot-btn { margin: 5px; padding: 6px 12px; cursor: pointer; background-color: #e3f2fd; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;}
+        .button-container { text-align: center; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}">Upload Check</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+             {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div>
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Compliance Prediction Results</h1>
+        <p class="page-subtitle">Predictions based on the uploaded file: <strong>{{ filename }}</strong></p>
+
+        {# --- Container for Plot Toggles --- #}
+        <div class="button-container">
+            {% if plots.summary_bar %}
+                <button class="toggle-plot-btn" onclick="togglePlot('summaryPlot')">📊 Show/Hide Summary</button>
+            {% endif %}
+            {% if plots.scatter_score_anomaly %}
+                <button class="toggle-plot-btn" onclick="togglePlot('scatterPlot')">📈 Show/Hide Score vs Anomalies</button>
+            {% endif %}
+            {% if plots.distribution_score %}
+                 <button class="toggle-plot-btn" onclick="togglePlot('distPlot')">📉 Show/Hide Score Distribution</button>
+            {% endif %}
+        </div>
+
+        {# --- Plot Sections --- #}
+        {% if plots.summary_bar %}
+            <div class="plot-section">
+                <h3>Prediction Summary</h3>
+                <div id="summaryPlot" class="plot-container"> {# Initially hidden #}
+                    <img src="data:image/png;base64,{{ plots.summary_bar }}" alt="Compliance Prediction Counts">
+                </div>
+            </div>
+        {% endif %}
+
+        {% if plots.scatter_score_anomaly %}
+            <div class="plot-section">
+                 <h3>Score vs Anomalies (by GST Prediction)</h3>
+                 <div id="scatterPlot" class="plot-container"> {# Initially hidden #}
+                    <img src="data:image/png;base64,{{ plots.scatter_score_anomaly }}" alt="Compliance Score vs Detected Anomalies">
+                </div>
+            </div>
+        {% endif %}
+
+        {% if plots.distribution_score %}
+            <div class="plot-section">
+                 <h3>Compliance Score Distribution</h3>
+                 <div id="distPlot" class="plot-container"> {# Initially hidden #}
+                    <img src="data:image/png;base64,{{ plots.distribution_score }}" alt="Distribution of Compliance Scores">
+                </div>
+            </div>
+        {% endif %}
+
+        {% if plot_error_message %} {# Display any plot generation errors #}
+             <p style="text-align: center; color: orange; margin-top: 15px;">{{ plot_error_message }}</p>
+        {% endif %}
+
+
+        {% if results %}
+        <h2>Detailed Results</h2>
+        <table>
+             <thead>
+                <tr>
+                    {% for key in results.0.keys %}
+                        {% if key != 'Business_Sector_Code' %}
+                            <th>{{ key|title }}</th>
+                        {% endif %}
+                    {% endfor %}
+                    {# Ensure Prediction columns are explicitly added if not already (should be included now) #}
+                    {# {% if 'GST_Prediction' not in results.0.keys %}<th>GST Prediction</th>{% endif %} #}
+                    {# {% if 'TDS_Prediction' not in results.0.keys %}<th>TDS Prediction</th>{% endif %} #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                <tr>
+                     {% for key, value in row.items %}
+                         {% if key != 'Business_Sector_Code' %}
+                            <td class="{% if key == 'GST_Prediction' %}{% if value %}compliant{% else %}non-compliant{% endif %}{% elif key == 'TDS_Prediction' %}{% if value %}compliant{% else %}non-compliant{% endif %}{% endif %}">
+                                {% if key == 'GST_Prediction' or key == 'TDS_Prediction' %}
+                                    {{ value|yesno:"Compliant,Non-Compliant" }}
+                                {% else %}
+                                     {# Format numbers nicely, leave other types as default #}
+                                     {{ value|default_if_none:'N/A'|floatformat:"-2g"|default:value }}
+                                {% endif %}
+                            </td>
+                         {% endif %}
+                     {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p style="text-align: center; margin-top: 20px;">No results to display or error processing file.</p>
+        {% endif %}
+
+        <div style="text-align: center;">
+             <a href="{% url 'data_upload' %}" class="back-link">← Upload Another File</a>
+        </div>
+
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    {# --- NEW: JavaScript for Toggling Plots --- #}
+    <script>
+        function togglePlot(plotId) {
+            const plotDiv = document.getElementById(plotId);
+            if (plotDiv) {
+                if (plotDiv.style.display === "none" || plotDiv.style.display === "") {
+                    plotDiv.style.display = "block";
+                } else {
+                    plotDiv.style.display = "none";
+                }
+            }
+        }
+        // Optional: Automatically open the first plot if it exists
+        document.addEventListener('DOMContentLoaded', () => {
+             const firstPlot = document.querySelector('.plot-container');
+             // if (firstPlot) {
+             //    firstPlot.style.display = 'block'; // Uncomment to show first plot by default
+             // }
+        });
+    </script>
+    {# --- END NEW SCRIPT --- #}
+    <script type="module">
+        import { updateHeader } from '{% static "js/data.js" %}';
+        document.addEventListener('DOMContentLoaded', updateHeader); // Call header update too
+    </script>
+</body>
+</html>

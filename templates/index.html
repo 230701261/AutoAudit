@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Login</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        {# No nav/user info on login page #}
+    </header>
+    <main class="login-container">
+        <h1>Login to AutoAudit</h1>
+
+        <form method="post" action="{% url 'index' %}">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 15px;">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div style="color: red; font-size: 12px;">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                 {% if form.password.errors %}
+                    <div style="color: red; font-size: 12px;">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                 <div style="color: red; font-size: 14px; margin-bottom: 15px;">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <button type="submit">Login</button>
+
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+        </form>
+
+        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    {# Removed auth.js as Django handles login form submission #}
+</body>
+</html>

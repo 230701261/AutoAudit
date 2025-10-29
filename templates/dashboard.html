@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Overview Dashboard - AutoAudit</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}" class="active">Dashboard</a>
+            <a href="{% url 'transactions' %}" >Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            {% if user.is_authenticated %} <div class="notification-bell">🔔</div>
+
+                <div class="user-info" id="header-user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title">Audit Overview</h1>
+        <p class="page-subtitle">Monitor transaction health, compliance status, and anomaly trends across your organization.</p>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon blue">📊</div>
+                <div class="metric-content">
+                    <h3>Total Transactions</h3>
+                    <p class="value">0</p>
+                    <span class="change">+12.45% vs last month</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon red">⚠️</div>
+                <div class="metric-content">
+                    <h3>Detected Anomalies</h3>
+                    <p class="value">0</p>
+                    <span class="change negative">+4.7% vs last month</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon green">✅</div>
+                <div class="metric-content">
+                    <h3>Compliance Score</h3>
+                    <p class="value">0%</p>
+                    <span class="change">+1.4% vs last month</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon purple">📋</div>
+                <div class="metric-content">
+                    <h3>Pending Reviews</h3>
+                    <p class="value">0</p>
+                    <span class="change">+15.7% vs last month</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Risk Heatmap</h2>
+                    <button class="view-btn">View Details</button>
+                </div>
+                <div class="heatmap-grid">
+                    <div class="heatmap-item medium">GST Compliance<br>12 Issues Found</div>
+                    <div class="heatmap-item high">TDS Violations<br>8 Issues Found</div>
+                    <div class="heatmap-item critical">Invoice Duplicates<br>3 Issues Found</div>
+                    <div class="heatmap-item low">HSN Code Errors<br>25 Issues Found</div>
+                    <div class="heatmap-item medium">PAN Validation<br>15 Issues Found</div>
+                    <div class="heatmap-item high">Amount Anomalies<br>6 Issues Found</div>
+                </div>
+                <div class="risk-legend">
+                    <span>Low</span>
+                    <span>Medium</span>
+                    <span>High</span>
+                    <span>Critical</span>
+                </div>
+                <div class="update-info">Last Updated: Oct 15, 2025 3:45 PM</div>
+
+                <div class="recent-anomalies">
+                    <div class="anomalies-header">
+                        <h3 class="anomalies-title">Recent Anomalies</h3>
+                        <button class="view-all-btn" onclick="window.location.href='{% url 'anomalies' %}'">View All</button>
+                    </div>
+                    <div id="recent-anomalies-list">
+                        </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Compliance Snapshot</h2>
+                </div>
+                <div class="compliance-circle"><span>96.4%</span></div>
+                <div class="score-bars">
+                    <div class="score-bar">
+                        <span class="label">GST Compliance</span>
+                        <span class="value">92%</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="label">TDS Compliance</span>
+                        <span class="value">78%</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="label">Invoice Validation</span>
+                        <span class="value">95%</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="label">PAN/GSTIN Validation</span>
+                        <span class="value">85%</span>
+                    </div>
+                    <div class="score-bar">
+                        <span class="label">HSN Code Accuracy</span>
+                        <span class="value">82%</span>
+                    </div>
+                </div>
+                <div class="update-info">Last Updated: Oct 15, 2025 3:45 PM</div>
+
+                <div class="quick-actions">
+                    <h3 class="quick-title">Quick Actions</h3>
+                    <button class="quick-btn blue" onclick="window.location.href='{% url 'data_upload' %}'">
+                        📁 Upload Data (CSV/Excel)
+                    </button>
+                    <button class="quick-btn green">
+                        🔍 Run Audit Scan
+                    </button>
+                    <button class="quick-btn orange" onclick="window.location.href='{% url 'rules_management' %}'">
+                        ⚙️ Configure Rules
+                    </button>
+                    <button class="full-dashboard-btn" onclick="window.location.href='{% url 'dashboard' %}'">View Full Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chatbot-fab" id="chatbot-toggle">
+            <span>💬</span>
+        </div>
+
+        <div class="chatbot-container hidden" id="chatbot-container">
+            <div class="chatbot-header">
+                <h3>AutoAudit AI Assistant</h3>
+                <span id="chatbot-close">✖</span>
+                <p style="font-size: 10px; margin: 0; color: #ccc;">(Dummy API: `sk-12345ABCDE...`)</p>
+            </div>
+            <div class="chatbot-messages" id="chat-messages">
+                <div class="chat-message bot">
+                    Hello! How can I help you with your audit today?
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chat-input" placeholder="Ask about anomalies...">
+                <button id="chat-send-btn">Send</button>
+            </div>
+        </div>
+        </main>
+    <footer>
+        <p>&copy; 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module" src="{% static 'js/dashboard.js' %}"></script>
+    <script type="module">
+        import { updateHeader } from '{% static "js/data.js" %}';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>
