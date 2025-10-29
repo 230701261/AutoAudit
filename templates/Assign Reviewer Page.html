@@ -7,6 +7,7 @@
     <title>AutoAudit - Assign Reviewer</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        /* Styles from previous steps */
         .ai-insights, .recommended-remediation {
             background: white;
             padding: 20px;
@@ -17,39 +18,77 @@
         .recommended-remediation ol {
             padding-left: 20px;
         }
+        /* --- Styles for dynamic elements --- */
+        .status-message {
+            margin-left: 15px;
+            font-style: italic;
+            color: #666;
+            display: none; /* Hidden by default */
+        }
+        .remediation-input-area {
+            margin-top: 15px;
+            display: none; /* Hidden by default */
+        }
+        .remediation-input-area textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding in width */
+        }
+        .hidden { display: none !important; } /* Utility class */
     </style>
 </head>
 <body>
     <header>
         <div class="logo">AutoAudit</div>
         <nav>
+            {# Ensure these URL names exist in your audit/urls.py #}
             <a href="{% url 'dashboard' %}">Dashboard</a>
             <a href="{% url 'transactions' %}">Transactions</a>
             <a href="{% url 'anomalies' %}">Anomalies</a>
             <a href="{% url 'compliance' %}">Compliance</a>
             <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}">Upload Check</a>
         </nav>
         <div class="header-right" id="header-right-container">
-            </div>
+             {# Standard header structure using Django user #}
+             {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div> {# Add notification logic if needed #}
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
     </header>
     <main>
         <h1 class="page-title" style="color: #007bff;">Assign Reviewer for Duplicate Payments</h1>
         <p class="page-subtitle">Ensure escalations and remediations reach the right specialists.</p>
-        <select style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+
+        {# --- Dropdown with ID --- #}
+        <select id="reviewer-select" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
             <option>Ananya Patel - Senior Audit Manager</option>
             <option>Vikram Singh - Forensic Audit Lead</option>
             <option selected>Meera Iyer - Controls Assurance Partner</option>
             <option>Rahul Desai - Data Quality Specialist</option>
         </select>
-        <button class="action-btn assign-btn">Confirm Reviewer</button>
-        <button class="action-btn logout-btn">Cancel</button>
-        
+
+        {# --- Buttons with IDs and status span --- #}
+        <button class="action-btn assign-btn" id="confirm-reviewer-btn">Confirm Reviewer</button>
+        <button class="action-btn logout-btn" id="cancel-reviewer-btn">Cancel</button>
+        <span id="reviewer-status" class="status-message">Indication sent. Waiting for confirmation...</span>
+
         <div class="ai-insights">
             <h2>AI Insights</h2>
             <div>Behavioral Outliers</div>
             <div>Control Overrides</div>
         </div>
-        
+
         <div class="recommended-remediation">
             <h2>Recommended Remediation</h2>
             <ol>
@@ -57,16 +96,113 @@
                 <li>Initiate approval workflow for pending reversals.</li>
                 <li>Raise ticket with indirect tax advisory for statutory response.</li>
             </ol>
-            <button class="action-btn schedule-btn">Create Remediation Task</button>
+
+            {# --- Initial button with ID --- #}
+            <button class="action-btn schedule-btn" id="initiate-remediation-btn">Create Remediation Task</button>
+
+            {# --- Hidden input area --- #}
+            <div id="remediation-input-area" class="remediation-input-area">
+                <textarea id="remediation-comment" placeholder="Add remediation task details or comments..."></textarea>
+                <button class="action-btn assign-btn" id="create-task-btn">Create Task</button>
+                <span id="remediation-status" class="status-message" style="display: block; margin-top: 10px;"></span> {# Status for remediation #}
+            </div>
+            {# --- End Hidden Area --- #}
         </div>
     </main>
     <footer>
         <p>© 2024 AutoAudit. All rights reserved.</p>
     </footer>
+
+    {# Import base data script first #}
     <script type="module" src="{% static 'js/data.js' %}"></script>
-    <script type="module">
-        import { updateHeader } from '{% static 'js/data.js' %}';
-        document.addEventListener('DOMContentLoaded', updateHeader);
+
+    {# --- Inline JavaScript for page interactions --- #}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Assign Reviewer page DOM loaded."); // Debug log
+
+            // --- Confirm Reviewer Logic ---
+            const confirmBtn = document.getElementById('confirm-reviewer-btn');
+            const reviewerSelect = document.getElementById('reviewer-select');
+            const reviewerStatus = document.getElementById('reviewer-status');
+            const cancelReviewerBtn = document.getElementById('cancel-reviewer-btn');
+
+            if (confirmBtn && reviewerSelect && reviewerStatus && cancelReviewerBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    confirmBtn.disabled = true; // Disable confirm button
+                    cancelReviewerBtn.disabled = true; // Disable cancel button
+                    reviewerSelect.disabled = true; // Disable dropdown
+                    reviewerStatus.style.display = 'inline'; // Show status message
+                    console.log('Reviewer confirmation indication sent.');
+                    // In a real app, you would send an API request here.
+                });
+            } else {
+                console.error('One or more elements for Confirm Reviewer not found!');
+            }
+
+            // --- Create Remediation Task Logic ---
+            const initiateBtn = document.getElementById('initiate-remediation-btn');
+            const inputArea = document.getElementById('remediation-input-area');
+            const commentBox = document.getElementById('remediation-comment');
+            const createBtn = document.getElementById('create-task-btn');
+            const remediationStatus = document.getElementById('remediation-status');
+            // Ensure reviewerSelect is accessible here if needed inside createBtn listener
+            // const reviewerSelect = document.getElementById('reviewer-select'); // Already defined above
+
+            // Add extra check to ensure all elements exist before adding listeners
+            if (initiateBtn && inputArea && commentBox && createBtn && remediationStatus && reviewerSelect) {
+                // 1. Click "Create Remediation Task" (Initial Button)
+                initiateBtn.addEventListener('click', () => {
+                    initiateBtn.classList.add('hidden'); // Hide initial button
+                    inputArea.style.display = 'block'; // Show textarea and create button
+                    remediationStatus.textContent = ''; // Clear previous status
+                    remediationStatus.style.display = 'none'; // Hide status initially
+                    remediationStatus.style.color = ''; // Reset color
+                    console.log('Remediation input area shown.');
+                });
+
+                // 2. Click the final "Create Task" button
+                createBtn.addEventListener('click', () => {
+                    const comment = commentBox.value.trim();
+                    const selectedReviewer = reviewerSelect.options[reviewerSelect.selectedIndex].text; // Get selected reviewer name
+
+                    if (comment === "") {
+                        alert("Please enter task details or comments.");
+                        return; // Don't proceed if comment is empty
+                    }
+
+                    console.log(`Assigning task to ${selectedReviewer} with comment: ${comment}`);
+                    // In a real app, send comment and reviewer info to backend API here.
+                    // (See previous response for fetch example)
+
+                    // --- SIMULATED SUCCESS ---
+                    inputArea.style.display = 'none'; // Hide input area
+                    // --- UPDATED MESSAGE BELOW ---
+                    remediationStatus.textContent = `Message sent successfully.`; // Changed message
+                    // --- END UPDATE ---
+                    remediationStatus.style.display = 'inline'; // Show status
+                    remediationStatus.style.color = '#28a745'; // Optional: Make it green
+                    commentBox.value = ''; // Clear the textarea
+                    // --- END SIMULATION ---
+
+                    // Optionally show the initial button again after success or delay
+                    // initiateBtn.classList.remove('hidden');
+                });
+            } else {
+                 console.error('One or more elements for Remediation Task not found!');
+            }
+
+            // Also call the header update function from data.js
+            if (typeof updateHeader === 'function') {
+                 updateHeader();
+                 console.log("Header update function called.");
+            } else {
+                 console.error("updateHeader function not found.");
+            }
+
+        });
     </script>
+    {# --- End New Script --- #}
+
 </body>
 </html>

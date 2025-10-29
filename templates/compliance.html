@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %} {# Make sure static is loaded at the top #}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoAudit - Compliance Command Centre</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* --- Style for Policy Links --- */
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px; /* Increased spacing */
+            padding: 8px 0; /* Add some padding */
+            border-bottom: 1px dashed #eee; /* Separator */
+        }
+        .policy-item:last-child {
+            border-bottom: none;
+        }
+        .policy-item a { /* Style the link text */
+            text-decoration: none;
+            color: #333; /* Standard text color */
+            font-weight: 500;
+        }
+        .policy-item a:hover {
+             color: #0056b3; /* Darker blue on hover */
+             text-decoration: underline;
+        }
+        .policy-item button { /* Use standard view button style */
+            background: #e3f2fd;
+            color: #1976d2;
+            border: none;
+            padding: 5px 10px; /* Smaller padding */
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .policy-item button:hover {
+             background: #cce5ff;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -16,16 +51,28 @@
             <a href="{% url 'anomalies' %}">Anomalies</a>
             <a href="{% url 'compliance' %}" class="active">Compliance</a>
             <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}">Upload Check</a>
         </nav>
         <div class="header-right" id="header-right-container">
-            </div>
+             {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div>
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
     </header>
     <main>
         <h1 class="page-title">Compliance Command Centre</h1>
         <p class="page-subtitle">Track statutory filings, policy adherence, and control testing tasks across the finance function.</p>
-        
+
+        {# --- Compliance Grid (unchanged) --- #}
         <div class="compliance-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
-            <div class="compliance-card">
+            {# ... cards for GST Filings, TDS Statements, etc. ... #}
+             <div class="compliance-card">
                 <h3>GST Filings</h3>
                 <p>GSTR-3B due on Oct 20, 2025</p>
                 <p>Completion: 82%</p>
@@ -56,7 +103,8 @@
                 </div>
             </div>
         </div>
-        
+
+        {# --- Upcoming Deadlines (unchanged) --- #}
         <div class="deadlines panel" style="padding: 16px; margin-bottom: 24px;">
             <h2>Upcoming Deadlines</h2>
             <ul>
@@ -65,24 +113,43 @@
                 <li>Internal audit report on business controls on Apr 9, 2026</li>
             </ul>
         </div>
-        
+
+        {# --- MODIFIED: Policy Repository --- #}
         <div class="repository panel" style="padding: 16px;">
             <h2>Policy Repository</h2>
             <ul>
-                <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">GST Compliance Manual 2024 <button>View</button></li>
-                <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">Anti-bribery & Corruption Policy <button>View</button></li>
-                <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">Delegation of Authority Matrix <button>View</button></li>
-                <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">Record Retention Guidelines <button>View</button></li>
+                <li class="policy-item">
+                    {# Using the filename from your screenshot #}
+                    <a href="{% static 'docs/gst_compliance_booklet_december_2024.pdf' %}" target="_blank">GST Compliance Manual 2024</a>
+                    <a href="{% static 'docs/gst_compliance_booklet_december_2024.pdf' %}" target="_blank"><button>View</button></a>
+                </li>
+                <li class="policy-item">
+                    {# Link to Anti-bribery PDF #}
+                    <a href="{% static 'docs/anti-bribery-and-anti-corruption-policy.pdf' %}" target="_blank">Anti-bribery & Corruption Policy</a>
+                    <a href="{% static 'docs/anti-bribery-and-anti-corruption-policy.pdf' %}" target="_blank"><button>View</button></a>
+                </li>
+                <li class="policy-item">
+                    {# Link to Delegation PDF #}
+                    <a href="{% static 'docs/GGGI-DELEGATION-OF-AUTHORITY.pdf' %}" target="_blank">Delegation of Authority Matrix</a>
+                    <a href="{% static 'docs/GGGI-DELEGATION-OF-AUTHORITY.pdf' %}" target="_blank"><button>View</button></a>
+                </li>
+                <li class="policy-item">
+                    {# Link to Record Retention PDF #}
+                    <a href="{% static 'docs/recordretentionscheduledget.pdf' %}" target="_blank">Record Retention Guidelines</a>
+                    <a href="{% static 'docs/recordretentionscheduledget.pdf' %}" target="_blank"><button>View</button></a>
+                </li>
             </ul>
-            <button class="upload-btn" style="margin-top: 12px;">Upload Policy</button>
+            <button class="upload-btn" style="margin-top: 12px;">Upload Policy</button> {# Add functionality later #}
         </div>
+        {# --- End Modification --- #}
     </main>
     <footer>
-        <p>&copy; 2024 AutoAudit. All rights reserved.</p>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
     </footer>
+
     <script type="module" src="{% static 'js/data.js' %}"></script>
     <script type="module">
-        import { updateHeader } from '{% static 'js/data.js' %}';
+        import { updateHeader } from '{% static "js/data.js" %}';
         document.addEventListener('DOMContentLoaded', updateHeader);
     </script>
 </body>
