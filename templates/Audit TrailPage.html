@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Audit Trail</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .audit-logs {
+            margin-top: 20px;
+        }
+        .log-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Audit Trail Viewer</h1>
+        <p class="page-subtitle">View logs of all user and system actions for full traceability.</p>
+        <div class="audit-logs">
+            <div class="log-item">
+                <p>User ID: 1 Action: Login Timestamp: 2025-10-15 12:00 PM</p>
+            </div>
+            <div class="log-item">
+                <p>System Action: Anomaly AN001 Critical Flagged Timestamp: 2025-10-15 12:05 PM</p>
+            </div>
+            </div>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">
+        import { updateHeader } from '{% static 'js/data.js' %}';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>

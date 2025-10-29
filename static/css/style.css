@@ -1,0 +1,412 @@
+/* css/style.css */
+
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.5;
+}
+
+header {
+    background-color: #fff;
+    padding: 12px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0066ff;
+}
+
+nav {
+    display: flex;
+    gap: 24px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+nav a.active {
+    color: #0066ff;
+    border-bottom: 2px solid #0066ff;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Notification Bell Styling */
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.notification-bell::after {
+    content: '3'; /* Hardcoded count from data.js */
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff0000;
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+}
+
+/* User Info Styling */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.user-info span {
+    color: #666;
+}
+
+.reviewer-info {
+    font-size: 12px;
+    color: #999;
+}
+
+.logout-btn {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Main Content Layout */
+main {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px 0;
+}
+
+/* Card/Panel Base Style */
+.panel, .report-card, .anomaly-card, .transaction-card, .login-container {
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Button Base Styles */
+.card-btn, .action-btn, .logout-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+/* Primary/Blue Buttons */
+.download-btn, .assign-btn, .update-btn {
+    background: #0066ff;
+    color: #fff;
+}
+.download-btn:hover, .assign-btn:hover, .update-btn:hover {
+    background: #0056b3;
+}
+
+/* Secondary/Info Buttons */
+.share-btn, .view-btn {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+/* Success/Green Buttons */
+.schedule-btn, .subscribe-btn, .upload-btn {
+    background: #28a745;
+    color: #fff;
+}
+.schedule-btn:hover, .subscribe-btn:hover, .upload-btn:hover {
+    background: #218838;
+}
+
+/* Form/Input Styles (For Login, Register, Data Upload) */
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+}
+.login-container h1 {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+.login-container input, .login-container select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.login-container button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+}
+.login-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.login-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Footer */
+footer {
+    background: #fff;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    border-top: 1px solid #eee;
+    margin-top: 24px;
+}
+
+/* Transaction List Specific Styles (Copied from transactions.html) */
+.transaction-list {
+    display: grid;
+    gap: 16px;
+}
+
+.transaction-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.status-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+.status-icon.warning { background: #fff3e0; color: #f57c00; }
+.status-icon.info { background: #e3f2fd; color: #1976d2; }
+.status-icon.success { background: #e8f5e8; color: #388e3c; }
+.transaction-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+.transaction-details p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #666;
+}
+.status-row {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #999;
+}
+.status-row span {
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #e0e0e0;
+}
+.status-row .risk-high { background: #ffebee; color: #d32f2f; }
+.status-row .risk-medium { background: #fff3e0; color: #f57c00; }
+.status-row .risk-low { background: #e8f5e8; color: #388e3c; }
+
+.action-btn {
+    font-size: 14px;
+    padding: 8px 16px;
+}
+
+
+/* --- NEWLY ADDED: Sync with Bank Feature --- */
+.sync-status {
+    display: none; /* Hidden by default */
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+}
+.loader {
+    border: 3px solid #f3f3f3; /* Light grey */
+    border-top: 3px solid #0066ff; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* --- END NEWLY ADDED --- */
+
+
+/* --- NEWLY ADDED: Chatbot Feature --- */
+.hidden {
+    display: none !important;
+}
+
+.chatbot-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #0066ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.chatbot-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatbot-header {
+    background: #0066ff;
+    color: white;
+    padding: 15px;
+}
+.chatbot-header h3 {
+    margin: 0;
+}
+.chatbot-header #chatbot-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.chatbot-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-message {
+    padding: 10px 14px;
+    border-radius: 18px;
+    max-width: 80%;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.chat-message.bot {
+    background: #e9ecef;
+    color: #333;
+    align-self: flex-start;
+}
+
+.chat-message.user {
+    background: #0066ff;
+    color: white;
+    align-self: flex-end;
+}
+
+.chatbot-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.chatbot-input-area input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    outline: none;
+}
+.chatbot-input-area input:focus {
+    border-color: #0066ff;
+}
+
+.chatbot-input-area button {
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0 15px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+/* --- END NEWLY ADDED --- */

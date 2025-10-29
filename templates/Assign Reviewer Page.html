@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Assign Reviewer</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .ai-insights, .recommended-remediation {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .recommended-remediation ol {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Assign Reviewer for Duplicate Payments</h1>
+        <p class="page-subtitle">Ensure escalations and remediations reach the right specialists.</p>
+        <select style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+            <option>Ananya Patel - Senior Audit Manager</option>
+            <option>Vikram Singh - Forensic Audit Lead</option>
+            <option selected>Meera Iyer - Controls Assurance Partner</option>
+            <option>Rahul Desai - Data Quality Specialist</option>
+        </select>
+        <button class="action-btn assign-btn">Confirm Reviewer</button>
+        <button class="action-btn logout-btn">Cancel</button>
+        
+        <div class="ai-insights">
+            <h2>AI Insights</h2>
+            <div>Behavioral Outliers</div>
+            <div>Control Overrides</div>
+        </div>
+        
+        <div class="recommended-remediation">
+            <h2>Recommended Remediation</h2>
+            <ol>
+                <li>Validate supporting documents with vendor onboarding team.</li>
+                <li>Initiate approval workflow for pending reversals.</li>
+                <li>Raise ticket with indirect tax advisory for statutory response.</li>
+            </ol>
+            <button class="action-btn schedule-btn">Create Remediation Task</button>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">
+        import { updateHeader } from '{% static 'js/data.js' %}';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>

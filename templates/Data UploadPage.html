@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Compliance Check Upload</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        main { text-align: center; }
+        input[type="file"] { padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; display: inline-block;}
+        form button { background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        form button:hover { background-color: #0056b3; }
+        .upload-area { border: 2px dashed #ccc; padding: 30px; margin: 20px auto; max-width: 500px; border-radius: 5px; background-color: #fdfdfd; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a>
+            <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}" class="active">Upload Check</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+            {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div>
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Run Compliance Check</h1>
+        <p class="page-subtitle">Upload an Excel (.xlsx) or CSV (.csv) file with columns: Total_Transactions, Detected_Anomalies, Compliance_Score, Business_Sector.</p>
+        <div class="upload-area">
+            <form method="post" enctype="multipart/form-data" action="{% url 'data_upload' %}">
+                {% csrf_token %}
+                 {# Allows both XLSX and CSV #}
+                <label for="excel_file">Select Excel (.xlsx) or CSV (.csv) file:</label><br>
+                <input type="file" id="excel_file" name="excel_file" accept=".xlsx,.csv" required>
+                <br><br>
+                <button type="submit">Upload and Predict</button>
+            </form>
+        </div>
+        {% if error_message %}
+            <p style="color: red; margin-top: 15px;">Error: {{ error_message }}</p>
+        {% endif %}
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">
+        import { updateHeader } from '{% static "js/data.js" %}';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>
