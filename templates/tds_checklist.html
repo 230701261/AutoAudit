@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - TDS Statement Checklist</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* (Copy relevant table styles from checklist_view.html) */
+        main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        .page-title, .page-subtitle { text-align: center; }
+        table { width: 100%; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-pending { color: orange; font-weight: bold;}
+        .status-error { color: red; font-weight: bold;}
+        .back-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; font-size: 16px;}
+    </style>
+</head>
+<body>
+    <header>
+        {# Standard Header #}
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a><a href="{% url 'transactions' %}">Transactions</a><a href="{% url 'anomalies' %}">Anomalies</a><a href="{% url 'compliance' %}">Compliance</a><a href="{% url 'reports' %}">Reports</a><a href="{% url 'data_upload' %}">Upload Check</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+             {% if user.is_authenticated %}<div class="notification-bell">🔔</div><div class="user-info"><span>{{ user.username }}</span><button class="logout-btn" id="logoutBtn">Logout</button></div>{% else %}<a href="{% url 'index' %}">Login</a>{% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">TDS Statement Checklist (Form 24Q - Q2)</h1>
+        <p class="page-subtitle">Status: 56% Complete - Variance Detected</p>
+        <table>
+            <thead><tr><th>Check Item</th><th>Reference</th><th>Status</th><th>Due Date</th><th>Notes</th></tr></thead>
+            <tbody>
+                <tr><td>Deductee PAN Verification</td><td>Rule 31A</td><td class="status-error">Errors Found</td><td>2025-10-15</td><td>5 PANs invalid/inactive. Correction statement required.</td></tr>
+                <tr><td>TDS Rate Application Check</td><td>Chapter XVII-B</td><td class="status-pending">In Progress</td><td>-</td><td>Checking rates applied against nature of payment.</td></tr>
+                <tr><td>TDS Deposit Challan Reconciliation</td><td>Sec 200</td><td class="status-error">Variance Detected</td><td>2025-10-07</td><td>Challan amount mismatch with calculation for Sep. Difference: ₹XXX.</td></tr>
+                <tr><td>Form 24Q Data Entry</td><td>Rule 31A</td><td class="status-pending">Not Started</td><td>2025-10-31</td><td>Awaiting corrected data and reconciliation.</td></tr>
+                <tr><td>Form 16/16A Issuance (Previous Qtr)</td><td>Sec 203</td><td class="status-ok">Completed</td><td>2025-08-15</td><td>Verified issuance for Q1.</td></tr>
+            </tbody>
+        </table>
+        <div style="text-align: center;"><a href="{% url 'compliance' %}" class="back-link">← Back to Compliance Overview</a></div>
+    </main>
+    <footer><p>© 2024 AutoAudit. All rights reserved.</p></footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">import { updateHeader } from '{% static "js/data.js" %}'; document.addEventListener('DOMContentLoaded', updateHeader);</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Company Law Checklist</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* (Copy relevant table styles from checklist_view.html) */
+        main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        .page-title, .page-subtitle { text-align: center; }
+        table { width: 100%; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-pending { color: orange; font-weight: bold;}
+        .status-error { color: red; font-weight: bold;}
+        .back-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; font-size: 16px;}
+    </style>
+</head>
+<body>
+    <header>
+        {# Standard Header #}
+        <div class="logo">AutoAudit</div>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a><a href="{% url 'transactions' %}">Transactions</a><a href="{% url 'anomalies' %}">Anomalies</a><a href="{% url 'compliance' %}">Compliance</a><a href="{% url 'reports' %}">Reports</a><a href="{% url 'data_upload' %}">Upload Check</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+             {% if user.is_authenticated %}<div class="notification-bell">🔔</div><div class="user-info"><span>{{ user.username }}</span><button class="logout-btn" id="logoutBtn">Logout</button></div>{% else %}<a href="{% url 'index' %}">Login</a>{% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Company Law Checklist (MCA Filings - FY 24-25)</h1>
+        <p class="page-subtitle">Status: 100% Complete</p>
+        <table>
+            <thead><tr><th>Check Item</th><th>Form</th><th>Status</th><th>Filing Date</th><th>SRN/Notes</th></tr></thead>
+            <tbody>
+                 <tr><td>Annual Financial Statements Filing</td><td>AOC-4</td><td class="status-ok">Filed</td><td>2025-09-30</td><td>SRN: AA1234567</td></tr>
+                 <tr><td>Annual Return Filing</td><td>MGT-7</td><td class="status-ok">Filed</td><td>2025-10-15</td><td>SRN: BB8901234</td></tr>
+                 <tr><td>Director KYC Update</td><td>DIR-3 KYC</td><td class="status-ok">Completed</td><td>2025-09-10</td><td>All directors verified.</td></tr>
+                 <tr><td>Statutory Auditor Appointment</td><td>ADT-1</td><td class="status-ok">Filed</td><td>2025-07-05</td><td>Filed post-AGM.</td></tr>
+                 <tr><td>Maintenance of Statutory Registers</td><td>Various Sections</td><td class="status-ok">Verified</td><td>2025-10-25</td><td>Registers up-to-date as per review.</td></tr>
+            </tbody>
+        </table>
+        <div style="text-align: center;"><a href="{% url 'compliance' %}" class="back-link">← Back to Compliance Overview</a></div>
+    </main>
+    <footer><p>© 2024 AutoAudit. All rights reserved.</p></footer>
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">import { updateHeader } from '{% static "js/data.js" %}'; document.addEventListener('DOMContentLoaded', updateHeader);</script>
+</body>
+</html>
