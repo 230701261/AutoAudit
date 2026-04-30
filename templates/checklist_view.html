@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAudit - Compliance Checklist</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Styles similar to compliance_results.html */
+        main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        .page-title, .page-subtitle { text-align: center; }
+        table { width: 100%; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; } /* Added vertical-align */
+        th { background-color: #f2f2f2; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-pending { color: orange; font-weight: bold;}
+        .status-error { color: red; font-weight: bold;}
+        .back-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; font-size: 16px;}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AutoAudit</div>
+        <nav>
+            {# Standard Navigation #}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'transactions' %}">Transactions</a>
+            <a href="{% url 'anomalies' %}">Anomalies</a>
+            <a href="{% url 'compliance' %}">Compliance</a> {# Link back #}
+            <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'data_upload' %}">Upload Check</a>
+        </nav>
+        <div class="header-right" id="header-right-container">
+             {# Standard Header #}
+             {% if user.is_authenticated %}
+                <div class="notification-bell">🔔</div>
+                <div class="user-info">
+                    <span>{{ user.username }}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            {% else %}
+                 <a href="{% url 'index' %}">Login</a>
+            {% endif %}
+        </div>
+    </header>
+    <main>
+        <h1 class="page-title" style="color: #007bff;">Compliance Checklist Details</h1>
+        <p class="page-subtitle">Detailed view of compliance checks (Sample Data).</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Check Item</th>
+                    <th>Reference</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# --- Sample Static Data --- #}
+                <tr>
+                    <td>GSTR-3B Filing Verification</td>
+                    <td>Rule 61</td>
+                    <td class="status-pending">Pending</td>
+                    <td>2025-10-20</td>
+                    <td>Input data received, reconciliation in progress.</td>
+                </tr>
+                <tr>
+                    <td>TDS Form 24Q Variance Check</td>
+                    <td>Sec 192, 194</td>
+                    <td class="status-error">Variance Detected</td>
+                    <td>2025-10-31</td>
+                    <td>Mismatch found between deposited amount and statement. Needs review.</td>
+                </tr>
+                <tr>
+                    <td>MCA Annual Filing (AOC-4)</td>
+                    <td>Companies Act S.137</td>
+                    <td class="status-ok">Completed</td>
+                    <td>2025-09-30</td>
+                    <td>Filed successfully. ARN: XXXXXXX</td>
+                </tr>
+                <tr>
+                    <td>Input Tax Credit Reconciliation (GSTR-2B vs Books)</td>
+                    <td>Sec 16(2)</td>
+                    <td class="status-pending">Pending</td>
+                    <td>2025-11-10</td>
+                    <td>Awaiting GSTR-2B generation for October.</td>
+                </tr>
+                 <tr>
+                    <td>E-Way Bill Generation Check (Inter-State > 50k)</td>
+                    <td>Rule 138</td>
+                    <td class="status-ok">Completed</td>
+                    <td>N/A (Continuous)</td>
+                    <td>Verified random sample - OK.</td>
+                </tr>
+                 <tr>
+                    <td>Reverse Charge Mechanism (RCM) Liability Check</td>
+                    <td>Sec 9(3), 9(4)</td>
+                    <td class="status-ok">Completed</td>
+                    <td>Monthly</td>
+                    <td>Verified applicable RCM paid for last month.</td>
+                 </tr>
+                 <tr>
+                     <td>HSN Code Accuracy Check</td>
+                     <td>Rule 46</td>
+                     <td class="status-pending">In Progress</td>
+                     <td>Quarterly</td>
+                     <td>Checking sample invoices against HSN master.</td>
+                 </tr>
+                {# --- End Sample Data --- #}
+            </tbody>
+        </table>
+
+        <div style="text-align: center;">
+             <a href="{% url 'compliance' %}" class="back-link">← Back to Compliance Overview</a>
+        </div>
+
+    </main>
+    <footer>
+        <p>© 2024 AutoAudit. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="{% static 'js/data.js' %}"></script>
+    <script type="module">
+        import { updateHeader } from '{% static "js/data.js" %}';
+        document.addEventListener('DOMContentLoaded', updateHeader);
+    </script>
+</body>
+</html>

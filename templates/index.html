@@ -10,31 +10,41 @@
 <body>
     <header>
         <div class="logo">AutoAudit</div>
-        {# No nav/user info on login page #}
     </header>
+
     <main class="login-container">
         <h1>Login to AutoAudit</h1>
 
-        <form method="post" action="{% url 'index' %}">
+        <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
 
+            <!-- Username -->
             <div style="margin-bottom: 15px;">
                 <label for="id_username">Username</label>
                 {{ form.username }}
                 {% if form.username.errors %}
-                    <div style="color: red; font-size: 12px;">{{ form.username.errors }}</div>
-                {% endif %}
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label for="id_password">Password</label>
-                {{ form.password }}
-                 {% if form.password.errors %}
-                    <div style="color: red; font-size: 12px;">{{ form.password.errors }}</div>
+                    <div style="color: red; font-size: 12px;">
+                        {{ form.username.errors }}
+                    </div>
                 {% endif %}
             </div>
 
+            <!-- Password -->
+            <div style="margin-bottom: 20px;">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div style="color: red; font-size: 12px;">
+                        {{ form.password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Non-field errors -->
             {% if form.non_field_errors %}
-                 <div style="color: red; font-size: 14px; margin-bottom: 15px;">{{ form.non_field_errors }}</div>
+                <div style="color: red; font-size: 14px; margin-bottom: 15px;">
+                    {{ form.non_field_errors }}
+                </div>
             {% endif %}
 
             <button type="submit">Login</button>
@@ -44,11 +54,13 @@
             {% endif %}
         </form>
 
-        <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+        <p>Don't have an account? 
+            <a href="{% url 'register' %}">Register</a>
+        </p>
     </main>
+
     <footer>
-        <p>© 2024 AutoAudit. All rights reserved.</p>
+        <p>© 2026 AutoAudit. All rights reserved.</p>
     </footer>
-    {# Removed auth.js as Django handles login form submission #}
 </body>
 </html>
